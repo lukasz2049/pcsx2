@@ -59,6 +59,7 @@ private:
 	bool OI_SuperManReturns(GSTexture* rt, GSTexture* ds, GSTextureCache::Source* t);
 	bool OI_ArTonelico2(GSTexture* rt, GSTexture* ds, GSTextureCache::Source* t);
 	bool OI_JakGames(GSTexture* rt, GSTexture* ds, GSTextureCache::Source* t);
+	bool OI_BurnoutGames(GSTexture* rt, GSTexture* ds, GSTextureCache::Source* t);
 
 	void OO_MajokkoALaMode2();
 
@@ -136,7 +137,7 @@ private:
 	float alpha0(int L, int X0, int X1);
 	float alpha1(int L, int X0, int X1);
 	void SwSpriteRender();
-	bool CanUseSwSpriteRender(bool allow_64x64_sprite);
+	bool CanUseSwSpriteRender();
 
 	template <bool linear>
 	void RoundSpriteOffset();
