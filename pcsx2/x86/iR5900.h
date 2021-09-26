@@ -117,6 +117,7 @@ u32* _eeGetConstReg(int reg);
 void _eeMoveGPRtoR(const x86Emitter::xRegister32& to, int fromgpr);
 void _eeMoveGPRtoM(uptr to, int fromgpr);
 void _eeMoveGPRtoRm(x86IntRegType to, int fromgpr);
+void _signExtendToMem(void* mem);
 void eeSignExtendTo(int gpr, bool onlyupper = false);
 
 void _eeFlushAllUnused();
@@ -127,7 +128,7 @@ void _eeOnWriteReg(int reg, int signext);
 // if 0, only flushes if not an xmm reg (used when overwriting lower 64bits of reg)
 void _deleteEEreg(int reg, int flush);
 
-void _flushEEreg(int reg);
+void _flushEEreg(int reg, bool clear = false);
 
 // allocates memory on the instruction size and returns the pointer
 u32* recGetImm64(u32 hi, u32 lo);

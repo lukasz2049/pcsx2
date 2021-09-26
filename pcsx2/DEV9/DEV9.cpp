@@ -14,8 +14,6 @@
  */
 
 #include "PrecompiledHeader.h"
-#define WINVER 0x0600
-#define _WIN32_WINNT 0x0600
 
 #ifdef _WIN32
 //#include <winsock2.h>
@@ -38,7 +36,7 @@
 #include "DEV9.h"
 #undef EXTERN
 #include "Config.h"
-#include "AppConfig.h"
+#include "gui/AppConfig.h"
 #include "smap.h"
 
 

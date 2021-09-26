@@ -14,7 +14,7 @@
  */
 
 #include "PrecompiledHeader.h"
-#include "App.h"
+#include "gui/App.h"
 #include "ConfigurationPanels.h"
 
 using namespace pxSizerFlags;
@@ -49,8 +49,9 @@ Panels::GameFixesPanel::GameFixesPanel( wxWindow* parent )
 			wxEmptyString
 		},
 		{
-			_("VU XGkick Hack - For Erementar Gerad."),
-			wxEmptyString
+			_("VU XGkick Sync - Use accurate timing for VU XGKicks (Slower)"),
+			pxEt(L"Fixes graphical errors on WRC, Erementar Gerad, Tennis Court Smash and others."
+			)
 		},
 		{
 			_("EE timing hack - Multi purpose hack. Try if all else fails."),

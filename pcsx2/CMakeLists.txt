@@ -85,9 +85,12 @@ if(WIN32)
 	)
 	target_compile_definitions(PCSX2 PRIVATE
 		_M_SSE=0x401 # TODO: Multiple ISA
+		DIRECTINPUT_VERSION=0x0800
+		WINVER=0x0603
+		_WIN32_WINNT=0x0603
 		WIN32_LEAN_AND_MEAN
 		LZMA_API_STATIC
-		BUILD_DX=1
+		WIL_SUPPRESS_EXCEPTIONS
 	)
 	target_include_directories(PCSX2 PRIVATE
 		../3rdparty # GL headers
@@ -212,6 +215,7 @@ set(pcsx2Headers
 	SaveState.h
 	Sifcmd.h
 	Sif.h
+	SingleRegisterTypes.h
 	Sio.h
 	sio_internal.h
 	SPR.h
@@ -969,6 +973,7 @@ set(pcsx2GuiSources
 	gui/AppInit.cpp
 	gui/AppMain.cpp
 	gui/AppRes.cpp
+	gui/CheckedStaticBox.cpp
 	gui/ConsoleLogger.cpp
 	gui/CpuUsageProvider.cpp
 	gui/Dialogs/AboutBoxDialog.cpp
@@ -1017,10 +1022,14 @@ set(pcsx2GuiSources
 	gui/Panels/PathsPanel.cpp
 	gui/Panels/SpeedhacksPanel.cpp
 	gui/Panels/VideoPanel.cpp
+	gui/pxCheckBox.cpp
+	gui/pxRadioPanel.cpp
 	gui/RecentIsoList.cpp
 	gui/Saveslots.cpp
 	gui/SysState.cpp
+	gui/ThreadingDialogs.cpp
 	gui/UpdateUI.cpp
+	gui/wxAppWithHelpers.cpp
 	)
 
 # gui headers
@@ -1035,6 +1044,7 @@ set(pcsx2GuiHeaders
 	gui/App.h
 	gui/ApplyState.h
 	gui/AppSaveStates.h
+	gui/CheckedStaticBox.h
 	gui/ConsoleLogger.h
 	gui/CpuUsageProvider.h
 	gui/Debugger/BreakpointWindow.h
@@ -1059,9 +1069,14 @@ set(pcsx2GuiHeaders
 	gui/Panels/ConfigurationPanels.h
 	gui/Panels/LogOptionsPanels.h
 	gui/Panels/MemoryCardPanels.h
+	gui/pxCheckBox.h
+	gui/pxEvents.h
 	gui/pxEventThread.h
+	gui/pxRadioPanel.h
 	gui/RecentIsoList.h
 	gui/Saveslots.h
+	gui/ThreadingDialogs.h
+	gui/ThreadingDialogs.cpp
 	)
 
 # Warning: the declaration of the .h are mandatory in case of resources files. It will ensure the creation
@@ -1445,6 +1460,7 @@ if(WIN32)
 	target_link_libraries(PCSX2 PRIVATE
 		baseclasses
 		pthreads4w
+		WIL::WIL
 		setupapi.lib
 		ws2_32.lib
 		shlwapi.lib
@@ -1500,9 +1516,8 @@ endforeach()
 # additonal include directories
 target_include_directories(PCSX2 PRIVATE
 	.
-	gui
 	x86
-	${CMAKE_BINARY_DIR}/pcsx2/gui
+	${CMAKE_BINARY_DIR}/pcsx2
 	${CMAKE_BINARY_DIR}/common/include/
 	"${CMAKE_SOURCE_DIR}/3rdparty/jpgd/"
 	"${CMAKE_SOURCE_DIR}/3rdparty/xbyak/"

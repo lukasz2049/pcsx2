@@ -908,7 +908,7 @@ void GSState::ApplyTEX0(GIFRegTEX0& TEX0)
 
 	// clut loading already covered with WriteTest, for drawing only have to check CPSM and CSA (MGS3 intro skybox would be drawn piece by piece without this)
 
-	uint64 mask = 0x1f78001c3fffffffull; // TBP0 TBW PSM TW TCC TFX CPSM CSA
+	uint64 mask = 0x1f78001fffffffffull; // TBP0 TBW PSM TW TH TCC TFX CPSM CSA
 
 	if (wt || PRIM->CTXT == i && ((TEX0.u64 ^ m_env.CTXT[i].TEX0.u64) & mask))
 	{
@@ -2375,14 +2375,14 @@ void GSState::Transfer(const uint8* mem, uint32 size)
 }
 
 template <class T>
-static void WriteState(char*& dst, T* src, size_t len = sizeof(T))
+static void WriteState(u8*& dst, T* src, size_t len = sizeof(T))
 {
 	memcpy(dst, src, len);
 	dst += len;
 }
 
 template <class T>
-static void ReadState(T* dst, char*& src, size_t len = sizeof(T))
+static void ReadState(T* dst, u8*& src, size_t len = sizeof(T))
 {
 	memcpy(dst, src, len);
 	src += len;
@@ -2403,7 +2403,7 @@ int GSState::Freeze(freezeData* fd, bool sizeonly)
 
 	Flush();
 
-    char* data = fd->data;
+    u8* data = fd->data;
 
 	WriteState(data, &m_version);
 	WriteState(data, &m_env.PRIM);
@@ -2482,7 +2482,7 @@ int GSState::Defrost(const freezeData* fd)
 		return -1;
 	}
 
-	char* data = fd->data;
+	u8* data = fd->data;
 
 	int version;
 

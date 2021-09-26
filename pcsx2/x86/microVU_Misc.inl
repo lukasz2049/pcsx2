@@ -52,15 +52,6 @@ void mVUloadIreg(const xmm& reg, int xyzw, VURegs* vuRegs)
 // Modifies the Source Reg!
 void mVUsaveReg(const xmm& reg, xAddressVoid ptr, int xyzw, bool modXYZW)
 {
-	/*xMOVAPS(xmmT2, ptr128[ptr]);
-	if (modXYZW && (xyzw == 8 || xyzw == 4 || xyzw == 2 || xyzw == 1)) {
-		mVUunpack_xyzw(reg, reg, 0);
-	}
-	mVUmergeRegs(xmmT2, reg, xyzw);
-
-	xMOVAPS(ptr128[ptr], xmmT2);
-	return;*/
-
 	switch (xyzw)
 	{
 		case 5: // YW
@@ -154,13 +145,14 @@ void mVUmergeRegs(const xmm& dest, const xmm& src, int xyzw, bool modXYZW)
 //------------------------------------------------------------------
 
 // Backup Volatile Regs (EAX, ECX, EDX, MM0~7, XMM0~7, are all volatile according to 32bit Win/Linux ABI)
-__fi void mVUbackupRegs(microVU& mVU, bool toMemory = false)
+__fi void mVUbackupRegs(microVU& mVU, bool toMemory = false, bool onlyNeeded = false)
 {
 	if (toMemory)
 	{
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < mVU.regAlloc->getXmmCount(); i++)
 		{
-			xMOVAPS(ptr128[&mVU.xmmBackup[i][0]], xmm(i));
+			if (!onlyNeeded || mVU.regAlloc->checkCachedReg(i) || xmmPQ.Id == i)
+				xMOVAPS(ptr128[&mVU.xmmBackup[i][0]], xmm(i));
 		}
 	}
 	else
@@ -171,13 +163,14 @@ __fi void mVUbackupRegs(microVU& mVU, bool toMemory = false)
 }
 
 // Restore Volatile Regs
-__fi void mVUrestoreRegs(microVU& mVU, bool fromMemory = false)
+__fi void mVUrestoreRegs(microVU& mVU, bool fromMemory = false, bool onlyNeeded = false)
 {
 	if (fromMemory)
 	{
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < mVU.regAlloc->getXmmCount(); i++)
 		{
-			xMOVAPS(xmm(i), ptr128[&mVU.xmmBackup[i][0]]);
+			if (!onlyNeeded || mVU.regAlloc->checkCachedReg(i) || xmmPQ.Id == i)
+				xMOVAPS(xmm(i), ptr128[&mVU.xmmBackup[i][0]]);
 		}
 	}
 	else
@@ -204,13 +197,13 @@ public:
 _mVUt void __fc mVUprintRegs()
 {
 	microVU& mVU = mVUx;
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < mVU.regAlloc->getXmmCount(); i++)
 	{
 		Console.WriteLn("xmm%d = [0x%08x,0x%08x,0x%08x,0x%08x]", i,
 			mVU.xmmBackup[i][0], mVU.xmmBackup[i][1],
 			mVU.xmmBackup[i][2], mVU.xmmBackup[i][3]);
 	}
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < mVU.regAlloc->getXmmCount(); i++)
 	{
 		Console.WriteLn("xmm%d = [%f,%f,%f,%f]", i,
 			(float&)mVU.xmmBackup[i][0], (float&)mVU.xmmBackup[i][1],

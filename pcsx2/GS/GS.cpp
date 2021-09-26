@@ -23,7 +23,7 @@
 #include "Renderers/OpenGL/GSRendererOGL.h"
 #include "GSLzma.h"
 
-#include "AppCoreThread.h"
+#include "gui/AppConfig.h"    // GetSettingsFolder()
 #include "common/pxStreams.h"
 
 #ifdef _WIN32
@@ -957,7 +957,7 @@ void GSReplay(char* lpszCmdLine, int renderer)
 
 		freezeData fd;
 		file->Read(&fd.size, 4);
-		fd.data = new char[fd.size];
+		fd.data = new u8[fd.size];
 		file->Read(fd.data, fd.size);
 
 		GSfreeze(FreezeAction::Load, &fd);

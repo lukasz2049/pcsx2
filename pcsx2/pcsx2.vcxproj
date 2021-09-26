@@ -34,7 +34,6 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)\gui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdparty\xbyak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdparty\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdparty\xz\xz\src\liblzma\api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -301,6 +300,7 @@
     <ClCompile Include="Gif_Unit.cpp" />
     <ClCompile Include="gui\AppGameDatabase.cpp" />
     <ClCompile Include="gui\AppUserMode.cpp" />
+    <ClCompile Include="gui\CheckedStaticBox.cpp" />
     <ClCompile Include="gui\Debugger\BreakpointWindow.cpp" />
     <ClCompile Include="gui\Debugger\CtrlDisassemblyView.cpp" />
     <ClCompile Include="gui\Debugger\CtrlMemView.cpp" />
@@ -313,6 +313,10 @@
     <ClCompile Include="gui\Dialogs\McdConfigDialog.cpp" />
     <ClCompile Include="gui\DriveList.cpp" />
     <ClCompile Include="gui\Panels\MemoryCardListView.cpp" />
+    <ClCompile Include="gui\pxCheckBox.cpp" />
+    <ClCompile Include="gui\pxRadioPanel.cpp" />
+    <ClCompile Include="gui\ThreadingDialogs.cpp" />
+    <ClCompile Include="gui\wxAppWithHelpers.cpp" />
     <ClCompile Include="IopGte.cpp" />
     <ClCompile Include="IPC.cpp" />
     <ClCompile Include="FW.cpp" />
@@ -743,8 +747,12 @@
     <ClInclude Include="GameDatabase.h" />
     <ClInclude Include="Gif_Unit.h" />
     <ClInclude Include="gui\AppGameDatabase.h" />
+    <ClInclude Include="gui\CheckedStaticBox.h" />
     <ClInclude Include="gui\i18n.h" />
     <ClInclude Include="gui\DriveList.h" />
+    <ClInclude Include="gui\pxCheckBox.h" />
+    <ClInclude Include="gui\pxEvents.h" />
+    <ClInclude Include="gui\pxRadioPanel.h" />
     <ClInclude Include="gui\Saveslots.h" />
     <ClInclude Include="gui\Debugger\BreakpointWindow.h" />
     <ClInclude Include="gui\Debugger\CtrlDisassemblyView.h" />
@@ -754,6 +762,8 @@
     <ClInclude Include="gui\Debugger\DebuggerLists.h" />
     <ClInclude Include="gui\Debugger\DisassemblyDialog.h" />
     <ClInclude Include="gui\Panels\MemoryCardPanels.h" />
+    <ClInclude Include="gui\ThreadingDialogs.h" />
+    <ClInclude Include="gui\wxAppWithHelpers.h" />
     <ClInclude Include="IopGte.h" />
     <ClInclude Include="IPC.h" />
     <ClInclude Include="FW.h" />
@@ -942,6 +952,7 @@
     <ClInclude Include="Dump.h" />
     <ClInclude Include="IopCommon.h" />
     <ClInclude Include="SaveState.h" />
+    <ClInclude Include="SingleRegisterTypes.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="System\SysThreads.h" />
     <ClInclude Include="System\RecTypes.h" />

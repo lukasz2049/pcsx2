@@ -341,6 +341,7 @@ __fi void mVUanalyzeLQ(mV, int Ft, int Is, bool writeIs)
 
 __fi void mVUanalyzeSQ(mV, int Fs, int It, bool writeIt)
 {
+	mVUlow.isMemWrite = true;
 	analyzeReg1(mVU, Fs, mVUlow.VF_read[0]);
 	analyzeVIreg1(mVU, It, mVUlow.VI_read[0]);
 	if (writeIt)
@@ -477,9 +478,15 @@ __fi void mVUanalyzeCflag(mV, int It)
 
 __fi void mVUanalyzeXGkick(mV, int Fs, int xCycles)
 {
+	mVUlow.isKick = true;
+	mVUregs.xgkickcycles = 0;
+	mVUlow.kickcycles = 0;
 	analyzeVIreg1(mVU, Fs, mVUlow.VI_read[0]);
-	analyzeXGkick1(); // Stall will cause mVUincCycles() to trigger pending xgkick
-	analyzeXGkick2(xCycles);
+	if (!CHECK_XGKICKHACK)
+	{
+		analyzeXGkick1(); // Stall will cause mVUincCycles() to trigger pending xgkick
+		analyzeXGkick2(xCycles);
+	}
 	// Note: Technically XGKICK should stall on the next instruction,
 	// this code stalls on the same instruction. The only case where this
 	// will be a problem with, is if you have very-specifically placed
@@ -574,59 +581,6 @@ static void analyzeBranchVI(mV, int xReg, bool& infoVar)
 	}
 }
 
-/*
-// Dead Code... the old version of analyzeBranchVI()
-__fi void analyzeBranchVI(mV, int xReg, bool& infoVar)
-{
-	if (!xReg)
-		return;
-	int i;
-	int iEnd = std::min(5, mVUcount + 1);
-	int bPC = iPC;
-	incPC2(-2);
-	for (i = 0; i < iEnd; i++)
-	{
-		if ((i == mVUcount) && (i < 5))
-		{
-			if (mVUpBlock->pState.viBackUp == xReg)
-			{
-				infoVar = 1;
-				i++;
-			}
-			break; 
-		}
-		if ((mVUlow.VI_write.reg == xReg) && mVUlow.VI_write.used)
-		{
-			if (mVUlow.readFlags || i == 5) break;
-			if (i == 0)
-			{
-				incPC2(-2);
-				continue;
-			}
-			if (((mVUlow.VI_read[0].reg == xReg) && (mVUlow.VI_read[0].used))
-			 || ((mVUlow.VI_read[1].reg == xReg) && (mVUlow.VI_read[1].used)))
-			{
-				incPC2(-2);
-				continue;
-			}
-		}
-		break;
-	}
-	if (i)
-	{
-		if (!infoVar)
-		{
-			incPC2(2);
-			mVUlow.backupVI = 1;
-			infoVar = 1;
-		}
-		iPC = bPC;
-		DevCon.WriteLn( Color_Green, "microVU%d: Branch VI-Delay (%d) [%04x]", getIndex, i, xPC);
-	}
-	else iPC = bPC;
-}
-*/
-
 // Branch in Branch Delay-Slots
 __ri int mVUbranchCheck(mV)
 {
@@ -648,7 +602,7 @@ __ri int mVUbranchCheck(mV)
 			{
 				// First branch is not conditional so we know what the link will be
 				// So we can let the existing evil block do its thing! We know where to get the addr :)
-				if (branchType <= 2 && branchType >= 9)
+				if (branchType <= 2 || branchType >= 9)
 				{
 					mVUregs.blockType = 2;
 				} // Else it is conditional, so we need to do some nasty processing later in microVU_Branch.inl
@@ -715,7 +669,6 @@ __ri void mVUanalyzeJump(mV, int Is, int It, bool isJALR)
 	{
 		mVUlow.constJump.isValid  = 1;
 		mVUlow.constJump.regValue = mVUconstReg[Is].regValue;
-		//DevCon.Status("microVU%d: Constant JR/JALR Address Optimization", mVU.index);
 	}
 	analyzeVIreg1(mVU, Is, mVUlow.VI_read[0]);
 	if (isJALR)
